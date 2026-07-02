@@ -228,9 +228,9 @@ const SCORE_KEY    = 'gd_scores_v1';
 const ROUNDS_KEY   = 'gd_rounds_v1';
 const PROFILES_KEY = 'gd_profiles_v1';
 const APIKEY_KEY   = 'gd_gemini_key';
-// Clé par défaut intégrée (⚠️ visible par tous si le repo est public).
-// La clé saisie dans ⚙️ (localStorage) a priorité sur celle-ci.
-const DEFAULT_API_KEY = 'AQ.Ab8RN6L5x4JZY1dLMN6Wel8opacIXaSeW3NcsnfwdD9tCDV1sg';
+// La clé Gemini est lue depuis apikey.txt (fichier local, ignoré par git).
+// Priorité : clé saisie dans ⚙️ (localStorage) > apikey.txt > IA publique sans clé.
+let txtApiKey = '';
 
 const DEFAULT_PROFILES = ['Anne','Anthony','Benoit','Cedric','Denis','Emmanuel','Katy','Leo','Li','Loris','Marine','Marion','Nicolas','Pauline','Pierre','Raphael','Risleine','Sophie','Thibaut','Thomas'];
 let txtProfiles = null; // profils chargés depuis players.txt (1 nom par ligne)
@@ -252,7 +252,13 @@ function getScores(){ try{ return JSON.parse(localStorage.getItem(SCORE_KEY)||'{
 function getRounds(){ try{ return JSON.parse(localStorage.getItem(ROUNDS_KEY)||'[]') }catch(e){ return [] } }
 function saveScores(){ localStorage.setItem(SCORE_KEY, JSON.stringify(scores)) }
 function saveRounds(){ localStorage.setItem(ROUNDS_KEY, JSON.stringify(rounds)) }
-function getApiKey(){ return (localStorage.getItem(APIKEY_KEY)||'').trim() || DEFAULT_API_KEY }
+function getApiKey(){ return (localStorage.getItem(APIKEY_KEY)||'').trim() || txtApiKey }
+async function loadApiKeyTxt(){
+  try{
+    const res = await fetch('apikey.txt', {cache:'no-store'});
+    if(res.ok){ txtApiKey = (await res.text()).trim() }
+  }catch(e){ console.warn('apikey.txt non lisible : IA publique sans clé utilisée') }
+}
 
 // Profils = players.txt (si lisible) + ajouts manuels − suppressions (localStorage)
 function getExtras(){ try{ return JSON.parse(localStorage.getItem(PROFILES_KEY+'_extra')||'[]') }catch(e){ return [] } }
@@ -642,7 +648,7 @@ async function testApiKey(){
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 renderProfiles(); renderBoard(); renderVerdictBtn(); renderLeaderboard(); renderHistory();
-loadPlayersTxt();
+loadPlayersTxt(); loadApiKeyTxt();
 </script>
 </body>
 </html>
