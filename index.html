@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GAUCHE OU DROITE ?</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#1a1030;--purple:#2d1b4e;--cream:#fff7e6;--ink:#221636;--muted:#6b5f89;--line:#4a3a70;
+  --yellow:#ffb703;
+  --gauche:#e63946;--gauche-dark:#9d0208;
+  --droite:#2667c9;--droite-dark:#123c7a;
+  --green:#2a9d8f;--white:#fff
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;padding:10px;font-family:'DM Sans',sans-serif;color:var(--ink);display:flex;align-items:center;justify-content:center;background:linear-gradient(120deg,var(--gauche-dark) -20%,var(--night) 38%,var(--night) 62%,var(--droite-dark) 120%);overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 12% 12%,rgba(230,57,70,.28),transparent 30%),radial-gradient(circle at 88% 12%,rgba(38,103,201,.28),transparent 30%),radial-gradient(circle at 50% 105%,rgba(255,183,3,.14),transparent 40%)}
+
+/* Screens */
+.screen{display:none;width:100%;max-width:780px;position:relative;z-index:1;animation:fade .22s ease}
+.screen.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* Panels & cards */
+.panel,.card{background:linear-gradient(180deg,var(--cream),#fff);border:1px solid rgba(23,33,58,.20);border-radius:22px;padding:16px;box-shadow:0 18px 55px rgba(0,0,0,.28)}
+
+/* Typography */
+h1{font-family:'Bebas Neue';font-size:56px;letter-spacing:4px;line-height:.9;text-align:center;color:var(--ink)}
+h1 .g{color:var(--gauche);text-shadow:2px 2px 0 rgba(157,2,8,.25)}
+h1 .d{color:var(--droite);text-shadow:2px 2px 0 rgba(18,60,122,.25)}
+.subtitle,.kicker{font-size:11px;text-align:center;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);font-weight:800}
+.subtitle{margin:6px 0 18px}
+.title{font-family:'Bebas Neue';font-size:32px;letter-spacing:3px;text-align:center;color:var(--cream);text-shadow:2px 2px 0 rgba(0,0,0,.3);margin-bottom:10px}
+label{display:block;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:800;margin-bottom:6px}
+.mini{font-size:11px;color:var(--muted);line-height:1.35}
+
+/* Inputs */
+input[type=text],input[type=password]{width:100%;background:#fff;border:1px solid rgba(23,33,58,.25);border-radius:10px;padding:10px 10px;font-size:15px;color:var(--ink);outline:none}
+input[type=text]:focus,input[type=password]:focus{border-color:var(--yellow);box-shadow:0 0 0 3px rgba(255,183,3,.14)}
+
+/* Buttons */
+.btn{width:100%;border:0;border-radius:13px;padding:12px 10px;font-family:'Bebas Neue';font-size:20px;letter-spacing:2.5px;cursor:pointer;transition:.12s}
+.btn:active{transform:scale(.975)}
+.btn:disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
+.primary{background:linear-gradient(135deg,var(--yellow),#fb8500);color:var(--ink);box-shadow:0 8px 22px rgba(255,183,3,.22)}
+.ghost{background:#fff;color:var(--ink);border:2px solid var(--line)}
+.danger{background:linear-gradient(135deg,var(--gauche),var(--gauche-dark));color:#fff}
+.rowbtn{display:flex;gap:8px;margin-top:8px}
+.rowbtn .btn{flex:1}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.full{grid-column:1/-1}
+
+/* Info box */
+.info{background:var(--cream);border:1px solid rgba(23,33,58,.18);border-radius:13px;padding:10px 12px;margin-bottom:10px;line-height:1.42;color:var(--muted);font-size:13px}
+.info strong{color:var(--ink)}
+
+/* Profile chips */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 10px;min-height:36px}
+.chip{padding:7px 14px;border-radius:99px;font-size:14px;font-weight:700;cursor:pointer;border:2px solid;transition:.12s;user-select:none;font-family:'DM Sans',sans-serif;background:none}
+.chip:active{transform:scale(.95)}
+.chip-profile{background:#fff;border-color:rgba(23,33,58,.25);color:var(--ink)}
+.chip-profile:hover{border-color:var(--yellow);background:rgba(255,183,3,.08)}
+.chip-profile.used{opacity:.35;pointer-events:none}
+.chip-selected{background:rgba(255,183,3,.15);border-color:var(--yellow);color:var(--ink)}
+.chip-selected:hover{background:rgba(230,57,70,.12);border-color:var(--gauche)}
+.addrow{display:flex;gap:6px;margin:6px 0}
+.addrow input{flex:1}
+.addrow .btn{width:auto;padding:9px 14px;font-size:20px;line-height:1;min-width:44px}
+
+/* Mot affiché */
+.word{font-family:'Bebas Neue';font-size:44px;letter-spacing:4px;text-align:center;color:var(--yellow);background:var(--night);border:2px solid var(--yellow);border-radius:18px;padding:16px 12px;margin:10px 0;word-break:break-word}
+
+/* Cartes de vote joueur */
+.vote-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.pcard{background:linear-gradient(180deg,var(--cream),#fff);border:1px solid rgba(23,33,58,.2);border-radius:16px;padding:10px;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.pcard.voted{border-color:var(--green);box-shadow:0 0 0 2px rgba(42,157,143,.25)}
+.pname{font-family:'Bebas Neue';font-size:22px;letter-spacing:2px;text-align:center;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:6px}
+.pname .check{font-size:14px}
+.gd-row{display:flex;gap:8px}
+.gd-btn{flex:1;border:2px solid;border-radius:12px;padding:11px 4px;font-family:'Bebas Neue';font-size:19px;letter-spacing:2px;cursor:pointer;transition:.12s;background:#fff}
+.gd-btn:active{transform:scale(.95)}
+.gd-g{color:var(--gauche);border-color:var(--gauche)}
+.gd-g.sel{background:var(--gauche);color:#fff;box-shadow:0 6px 18px rgba(230,57,70,.4)}
+.gd-d{color:var(--droite);border-color:var(--droite)}
+.gd-d.sel{background:var(--droite);color:#fff;box-shadow:0 6px 18px rgba(38,103,201,.4)}
+
+/* Verdict */
+.verdict-banner{font-family:'Bebas Neue';font-size:62px;letter-spacing:6px;text-align:center;color:#fff;border-radius:18px;padding:20px 12px;margin:10px 0;line-height:.9}
+.verdict-banner.gauche{background:linear-gradient(135deg,var(--gauche),var(--gauche-dark));box-shadow:0 12px 40px rgba(230,57,70,.4)}
+.verdict-banner.droite{background:linear-gradient(135deg,var(--droite),var(--droite-dark));box-shadow:0 12px 40px rgba(38,103,201,.4)}
+.explain{background:var(--cream);border:1px solid rgba(23,33,58,.18);border-left:5px solid var(--yellow);border-radius:13px;padding:12px 14px;font-size:15px;line-height:1.5;color:var(--ink);margin:10px 0;font-style:italic}
+.mode-badge{display:inline-block;padding:4px 12px;border-radius:99px;font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
+.mode-ia{background:rgba(42,157,143,.15);color:var(--green);border:1px solid var(--green)}
+.mode-maj{background:rgba(255,183,3,.15);color:#b47500;border:1px solid var(--yellow)}
+
+/* Résultats joueurs */
+.res-chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:10px 0}
+.res-chip{padding:7px 14px;border-radius:99px;font-size:14px;font-weight:800;border:2px solid}
+.res-win{background:rgba(42,157,143,.12);border-color:var(--green);color:var(--green)}
+.res-lose{background:rgba(107,95,137,.1);border-color:rgba(107,95,137,.4);color:var(--muted);text-decoration:line-through}
+
+/* Loading */
+.loader{display:flex;flex-direction:column;align-items:center;gap:14px;padding:26px 10px}
+.balance{font-size:64px;animation:tilt 1.1s ease-in-out infinite}
+@keyframes tilt{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}
+.load-msg{font-size:14px;color:var(--muted);font-weight:700;text-align:center;min-height:20px}
+
+/* Floatbar & overlays */
+.floatbar{position:fixed;right:10px;top:10px;display:flex;gap:8px;z-index:20}
+.floatbar button{width:auto;padding:8px 11px;font-size:16px;border-radius:12px}
+.overlay{position:fixed;inset:0;background:rgba(10,8,24,.75);z-index:50;display:none;align-items:center;justify-content:center;padding:14px}
+.overlay.show{display:flex}
+.modal{background:#fff;border-radius:22px;padding:16px;width:min(980px,96vw);max-height:88vh;overflow:auto;box-shadow:0 25px 80px rgba(0,0,0,.35)}
+.modal-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.modal-title{font-family:'Bebas Neue';font-size:30px;letter-spacing:3px}
+.modal .btn{width:auto;padding:9px 14px;font-size:17px}
+
+/* Scores table */
+.table-wrap{overflow:auto;border-radius:14px;border:1px solid rgba(23,33,58,.18);margin-top:10px}
+table{width:100%;border-collapse:collapse;background:#fff;font-size:13px}
+th,td{padding:8px 9px;border-bottom:1px solid rgba(23,33,58,.12);text-align:center;white-space:nowrap}
+th{background:var(--cream);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
+td:first-child,th:first-child{text-align:left;font-weight:800}
+.pos{color:var(--green);font-weight:900}
+.zero{color:var(--muted);font-weight:900}
+th .g-tag{color:var(--gauche)}
+th .d-tag{color:var(--droite)}
+.leader{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.leader-card{background:#fff;border:1px solid rgba(23,33,58,.16);border-radius:14px;padding:10px;text-align:center}
+.rank{font-family:'Bebas Neue';font-size:24px;color:var(--yellow)}
+.score{font-family:'Bebas Neue';font-size:34px;color:var(--ink)}
+.hist-item{background:var(--cream);border:1px solid rgba(23,33,58,.15);border-radius:13px;padding:10px 12px;margin-bottom:8px;font-size:13px;line-height:1.45}
+.hist-word{font-family:'Bebas Neue';font-size:20px;letter-spacing:2px}
+.hist-verdict{font-weight:900;text-transform:uppercase;letter-spacing:1px}
+.hist-verdict.gauche{color:var(--gauche)}
+.hist-verdict.droite{color:var(--droite)}
+.hidden{display:none!important}
+hr{border:0;border-top:1px solid rgba(23,33,58,.22);margin:14px 0}
+h3.sec{font-family:'Bebas Neue';font-size:28px;letter-spacing:2px;margin-top:8px}
+
+/* Responsive */
+@media(max-width:700px){.screen{max-width:540px}.split,.leader{grid-template-columns:1fr}.floatbar{top:auto;bottom:10px;right:10px}}
+@media(max-width:520px){.vote-grid{grid-template-columns:1fr}}
+@media(max-width:430px){h1{font-size:42px}.word{font-size:34px}.title{font-size:26px}.verdict-banner{font-size:48px}}
+</style>
+</head>
+<body>
+
+<div class="floatbar">
+  <button class="btn ghost" onclick="showScoresOverlay()">🏆</button>
+  <button class="btn ghost" onclick="showHistoryOverlay()">📜</button>
+  <button class="btn ghost" onclick="showSettingsOverlay()">⚙️</button>
+</div>
+
+<!-- ACCUEIL -->
+<section class="screen active" id="home">
+  <div class="panel">
+    <h1><span class="g">GAUCHE</span> OU <span class="d">DROITE</span> ?</h1>
+    <p class="subtitle">L'intelligence artificielle tranche · à ne pas prendre au premier degré</p>
+    <label>PROFILS <span style="font-size:11px;letter-spacing:1px;text-transform:none;font-weight:400;color:var(--muted)">· appui long pour supprimer</span></label>
+    <div id="profileChips" class="chips"></div>
+    <div class="addrow">
+      <input type="text" id="newProfile" placeholder="Ajouter un prénom…" maxlength="20" onkeydown="if(event.key==='Enter')addProfile()">
+      <button class="btn ghost" onclick="addProfile()">＋</button>
+    </div>
+    <label style="margin-top:10px">JOUEURS <span id="selectedCount" style="font-size:11px;font-weight:400;color:var(--muted)">(0 sélectionné)</span></label>
+    <div id="selectedChips" class="chips"></div>
+    <div class="info" id="apiStatus" style="margin-top:6px"></div>
+    <div class="split" style="margin-top:6px">
+      <button class="btn ghost" onclick="resetAllData()">🧹 RESET SCORES</button>
+      <button class="btn primary" id="startBtn" onclick="startRound()">JOUER →</button>
+    </div>
+  </div>
+</section>
+
+<!-- MOT -->
+<section class="screen" id="wordScreen">
+  <div class="title">MANCHE <span id="roundNum">1</span></div>
+  <div class="panel">
+    <label>PROPOSE UN MOT OU UNE EXPRESSION</label>
+    <input type="text" id="wordInput" placeholder="Ex : la raclette, le vélo, les ronds-points…" maxlength="60" onkeydown="if(event.key==='Enter')goVote()">
+    <div class="rowbtn">
+      <button class="btn ghost" onclick="goHome()">← MENU</button>
+      <button class="btn primary" onclick="goVote()">C'EST PARTI →</button>
+    </div>
+  </div>
+</section>
+
+<!-- VOTES -->
+<section class="screen" id="voteScreen">
+  <div class="title">ALORS, C'EST DE GAUCHE OU DE DROITE ?</div>
+  <div class="word" id="voteWord"></div>
+  <div class="vote-grid" id="voteGrid"></div>
+  <button class="btn primary" id="verdictBtn" onclick="revealVerdict()" disabled>⚖️ VERDICT DE L'IA</button>
+  <button class="btn ghost" style="margin-top:8px" onclick="backToWord()">← CHANGER DE MOT</button>
+</section>
+
+<!-- CHARGEMENT -->
+<section class="screen" id="loadingScreen">
+  <div class="card loader">
+    <div class="balance">⚖️</div>
+    <div class="load-msg" id="loadMsg">L'IA consulte son idéologie…</div>
+  </div>
+</section>
+
+<!-- RÉSULTAT -->
+<section class="screen" id="resultScreen">
+  <div class="card">
+    <div class="kicker" id="resultWordLabel"></div>
+    <div class="verdict-banner" id="verdictBanner"></div>
+    <div style="text-align:center"><span class="mode-badge" id="modeBadge"></span></div>
+    <div class="explain" id="explainBox"></div>
+    <h3 class="sec" style="text-align:center">Qui a bien voté ? <span style="font-size:16px;color:var(--muted)">(+1 point)</span></h3>
+    <div class="res-chips" id="resChips"></div>
+    <h3 class="sec">🏆 Leaderboard</h3>
+    <div id="resultLeader"></div>
+    <h3 class="sec">📊 Points par manche</h3>
+    <div id="resultTable"></div>
+  </div>
+  <hr>
+  <button class="btn primary" onclick="nextRound()">MOT SUIVANT →</button>
+  <button class="btn ghost" style="margin-top:8px" onclick="goHome()">MENU PRINCIPAL</button>
+</section>
+
+<!-- OVERLAY SCORES -->
+<div class="overlay" id="scoresOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">🏆 SCORES</div>
+      <div class="rowbtn" style="margin:0">
+        <button class="btn ghost" onclick="resetAllData();showScoresOverlay()">RESET</button>
+        <button class="btn danger" onclick="hideOverlay('scoresOverlay')">FERMER</button>
+      </div>
+    </div>
+    <div id="scoresOverlayContent"></div>
+  </div>
+</div>
+
+<!-- OVERLAY HISTORIQUE -->
+<div class="overlay" id="historyOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">📜 HISTORIQUE</div>
+      <button class="btn danger" onclick="hideOverlay('historyOverlay')">FERMER</button>
+    </div>
+    <div id="historyContent"></div>
+  </div>
+</div>
+
+<!-- OVERLAY RÉGLAGES -->
+<div class="overlay" id="settingsOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">⚙️ RÉGLAGES</div>
+      <button class="btn danger" onclick="hideOverlay('settingsOverlay')">FERMER</button>
+    </div>
+    <div class="info">🤖 Avec une <strong>clé API Gemini</strong> (gratuite sur <strong>aistudio.google.com</strong>), l'IA tranche et donne une <strong>explication</strong>, comme le site original mais en mieux. Sans clé, c'est le <strong>vote majoritaire</strong> des joueurs qui décide.</div>
+    <label>CLÉ API GEMINI</label>
+    <input type="password" id="apiKeyInput" placeholder="AIza…">
+    <div class="rowbtn">
+      <button class="btn ghost" onclick="saveApiKey()">💾 ENREGISTRER</button>
+      <button class="btn ghost" onclick="testApiKey()">🧪 TESTER</button>
+    </div>
+    <p class="mini" id="apiTestResult" style="margin-top:8px"></p>
+  </div>
+</div>
+
+<script>
+// ─── Constantes ───────────────────────────────────────────────────────────────
+const SCORE_KEY    = 'gd_scores_v1';
+const ROUNDS_KEY   = 'gd_rounds_v1';
+const PROFILES_KEY = 'gd_profiles_v1';
+const APIKEY_KEY   = 'gd_gemini_key';
+
+const DEFAULT_PROFILES = ['Denis','Cedric','Pauline','Benoit','Risleine','Marine','Marion','Emmanuel','Katy','Loris','Thibaut','Pierre','Anne','Sophie','Anthony','Leo','Nicolas','Raphael','Thomas','Li'];
+
+const GEMINI_MODELS = ['gemini-2.5-flash','gemini-2.5-flash-lite','gemini-2.0-flash','gemini-2.0-flash-lite'];
+
+const LOAD_MSGS = [
+  "L'IA consulte son idéologie…",
+  "Relecture du programme des partis…",
+  "Sondage express des zincs de bistrot…",
+  "Analyse du positionnement sociologique…",
+  "L'IA hésite… non, elle tranche.",
+  "Vérification auprès de tonton au repas de famille…"
+];
+
+// ─── État ─────────────────────────────────────────────────────────────────────
+let selectedPlayers = [], players = [];
+let word = '', votes = {}, scores = {}, rounds = [];
+let loadInt = null;
+
+// ─── Utilitaires ──────────────────────────────────────────────────────────────
+function $(id){ return document.getElementById(id) }
+function screen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); $(id).classList.add('active') }
+function esc(s){ return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])) }
+
+// ─── Stockage ─────────────────────────────────────────────────────────────────
+function getScores(){ try{ return JSON.parse(localStorage.getItem(SCORE_KEY)||'{}') }catch(e){ return {} } }
+function getRounds(){ try{ return JSON.parse(localStorage.getItem(ROUNDS_KEY)||'[]') }catch(e){ return [] } }
+function saveScores(){ localStorage.setItem(SCORE_KEY, JSON.stringify(scores)) }
+function saveRounds(){ localStorage.setItem(ROUNDS_KEY, JSON.stringify(rounds)) }
+function getProfiles(){ try{ return JSON.parse(localStorage.getItem(PROFILES_KEY)||'null') }catch(e){ return null } }
+function saveProfiles(l){ localStorage.setItem(PROFILES_KEY, JSON.stringify(l)) }
+function getApiKey(){ return (localStorage.getItem(APIKEY_KEY)||'').trim() }
+
+// ─── Profils (blocs joueurs) ──────────────────────────────────────────────────
+function renderProfileChips(){
+  const profiles = getProfiles() || DEFAULT_PROFILES;
+  const c = $('profileChips'); c.innerHTML = '';
+  profiles.forEach(name=>{
+    const b = document.createElement('button');
+    b.className = 'chip chip-profile' + (selectedPlayers.includes(name)?' used':'');
+    b.textContent = name; b.title = 'Appui long pour supprimer';
+    let t = null;
+    b.addEventListener('pointerdown',()=>{ t=setTimeout(()=>{ if(confirm('Supprimer "'+name+'" des profils ?')) removeProfile(name) },600) });
+    b.addEventListener('pointerup',()=>clearTimeout(t));
+    b.addEventListener('pointerleave',()=>clearTimeout(t));
+    b.onclick = ()=>selectPlayer(name);
+    b.oncontextmenu = e=>{ e.preventDefault(); removeProfile(name) };
+    c.appendChild(b);
+  });
+}
+function renderSelectedChips(){
+  const c = $('selectedChips'); c.innerHTML = '';
+  selectedPlayers.forEach((name,i)=>{
+    const b = document.createElement('button');
+    b.className = 'chip chip-selected'; b.textContent = name+' ✕';
+    b.onclick = ()=>removeSelected(i);
+    c.appendChild(b);
+  });
+  $('selectedCount').textContent = '('+selectedPlayers.length+' sélectionné'+(selectedPlayers.length>1?'s':'')+')';
+  $('startBtn').disabled = selectedPlayers.length < 2;
+}
+function selectPlayer(name){ if(selectedPlayers.includes(name))return; selectedPlayers.push(name); renderProfileChips(); renderSelectedChips() }
+function removeSelected(i){ selectedPlayers.splice(i,1); renderProfileChips(); renderSelectedChips() }
+function addProfile(){
+  const inp = $('newProfile'), name = inp.value.trim(); if(!name)return;
+  const profiles = getProfiles()||[];
+  if(!profiles.includes(name)){ profiles.push(name); saveProfiles(profiles) }
+  inp.value=''; selectPlayer(name);
+}
+function removeProfile(name){
+  saveProfiles((getProfiles()||[]).filter(p=>p!==name));
+  selectedPlayers = selectedPlayers.filter(p=>p!==name);
+  renderProfileChips(); renderSelectedChips();
+}
+function resetAllData(){
+  if(confirm('Remettre scores et historique à zéro ?')){
+    scores={}; rounds=[]; saveScores(); saveRounds(); alert('Reset OK ✅');
+  }
+}
+
+// ─── Statut API ───────────────────────────────────────────────────────────────
+function renderApiStatus(){
+  $('apiStatus').innerHTML = getApiKey()
+    ? '🤖 <strong>Mode IA activé</strong> — Gemini tranche et explique son verdict.'
+    : '🗳️ <strong>Mode vote majoritaire</strong> — pas de clé API. Ajoute une clé Gemini dans ⚙️ pour avoir le verdict IA + explication.';
+}
+
+// ─── Déroulement ──────────────────────────────────────────────────────────────
+function startRound(){
+  players = [...selectedPlayers];
+  scores = getScores(); rounds = getRounds();
+  players.forEach(p=>{ if(scores[p]===undefined) scores[p]=0 });
+  saveScores();
+  $('roundNum').textContent = rounds.length + 1;
+  $('wordInput').value = '';
+  screen('wordScreen');
+  setTimeout(()=>$('wordInput').focus(),250);
+}
+function nextRound(){ startRound() }
+function backToWord(){ screen('wordScreen'); setTimeout(()=>$('wordInput').focus(),250) }
+function goHome(){ renderProfileChips(); renderSelectedChips(); renderApiStatus(); screen('home') }
+
+function goVote(){
+  const w = $('wordInput').value.trim();
+  if(!w){ alert('Écris un mot ou une expression !'); return }
+  word = w; votes = {};
+  $('voteWord').textContent = word;
+  renderVoteGrid();
+  screen('voteScreen');
+}
+function renderVoteGrid(){
+  const g = $('voteGrid'); g.innerHTML = '';
+  players.forEach((p,i)=>{
+    const card = document.createElement('div');
+    card.className = 'pcard' + (votes[p]?' voted':'');
+    card.innerHTML = `
+      <div class="pname">${esc(p)} <span class="check">${votes[p]?'✅':''}</span></div>
+      <div class="gd-row">
+        <button class="gd-btn gd-g ${votes[p]==='gauche'?'sel':''}" onclick="castVote(${i},'gauche')">✊ GAUCHE</button>
+        <button class="gd-btn gd-d ${votes[p]==='droite'?'sel':''}" onclick="castVote(${i},'droite')">💼 DROITE</button>
+      </div>`;
+    g.appendChild(card);
+  });
+  $('verdictBtn').disabled = players.some(p=>!votes[p]);
+}
+function castVote(i, side){ votes[players[i]] = side; renderVoteGrid() }
+
+// ─── Verdict IA (Gemini) ──────────────────────────────────────────────────────
+async function askGemini(theWord){
+  const key = getApiKey();
+  if(!key) throw new Error('Pas de clé API');
+  const prompt = `Tu es l'intelligence artificielle du jeu "C'est de gauche ou de droite ?" (jeu humoristique français, à ne pas prendre au premier degré).
+On te donne un mot ou une expression : « ${theWord} »
+Tu DOIS trancher : c'est de gauche OU de droite. Interdiction de répondre "les deux", "ça dépend" ou de rester neutre.
+Donne aussi une explication de 2 à 3 phrases : drôle, second degré, pleine de clichés politiques assumés et d'absurde à la française. L'explication doit justifier ton verdict avec une mauvaise foi assumée mais un fond d'observation sociologique.`;
+  const body = {
+    contents: [{ parts: [{ text: prompt }] }],
+    generationConfig: {
+      temperature: 1.0,
+      maxOutputTokens: 1024,
+      responseMimeType: 'application/json',
+      responseSchema: {
+        type: 'OBJECT',
+        properties: {
+          verdict:     { type: 'STRING', enum: ['gauche','droite'] },
+          explication: { type: 'STRING' }
+        },
+        required: ['verdict','explication']
+      }
+    }
+  };
+  for(const model of GEMINI_MODELS){
+    for(let attempt=1; attempt<=2; attempt++){
+      try{
+        const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,
+          { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+        if(resp.status===429 && attempt===1){ await new Promise(r=>setTimeout(r,3000)); continue }
+        if(!resp.ok) break;
+        const json = await resp.json();
+        let text = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        text = text.replace(/^```(?:json)?\n?/i,'').replace(/\n?```\s*$/i,'').trim();
+        const parsed = JSON.parse(text);
+        const v = String(parsed.verdict||'').toLowerCase();
+        if(v==='gauche'||v==='droite') return { verdict:v, explication:String(parsed.explication||'').trim(), model };
+      }catch(e){ break }
+    }
+  }
+  throw new Error('Tous les modèles Gemini ont échoué');
+}
+
+function majorityVerdict(){
+  let g=0,d=0;
+  players.forEach(p=>{ votes[p]==='gauche' ? g++ : d++ });
+  if(g===d){
+    const v = Math.random()<.5?'gauche':'droite';
+    return { verdict:v, explication:'Égalité parfaite dans les votes ('+g+'–'+d+') : le destin a tranché à pile ou face. C\'est peut-être ça, le centrisme.', mode:'majorité (égalité → hasard)' };
+  }
+  const v = g>d?'gauche':'droite';
+  return { verdict:v, explication:'Verdict rendu par la majorité des joueurs ('+Math.max(g,d)+' voix contre '+Math.min(g,d)+'). La démocratie a parlé, comme d\'habitude elle a raison. Ou pas.', mode:'vote majoritaire' };
+}
+
+async function revealVerdict(){
+  screen('loadingScreen');
+  let i = 0;
+  $('loadMsg').textContent = LOAD_MSGS[0];
+  clearInterval(loadInt);
+  loadInt = setInterval(()=>{ i=(i+1)%LOAD_MSGS.length; $('loadMsg').textContent = LOAD_MSGS[i] },1600);
+
+  let result, mode;
+  try{
+    if(!getApiKey()) throw new Error('no key');
+    result = await askGemini(word);
+    mode = 'ia';
+  }catch(e){
+    const m = majorityVerdict();
+    result = m; mode = 'maj';
+    result.modeLabel = m.mode;
+  }
+  clearInterval(loadInt);
+
+  // Points : +1 si le vote correspond au verdict
+  const deltas = {};
+  players.forEach(p=>{ deltas[p] = (votes[p]===result.verdict) ? 1 : 0 });
+  scores = getScores(); rounds = getRounds();
+  players.forEach(p=>{ scores[p] = (scores[p]||0) + deltas[p] });
+  rounds.push({
+    n: rounds.length+1,
+    date: new Date().toLocaleString('fr-FR'),
+    word, verdict: result.verdict, explication: result.explication,
+    mode: mode==='ia' ? 'IA' : 'Majorité',
+    votes: {...votes}, deltas, players: [...players]
+  });
+  saveScores(); saveRounds();
+  showResult(result, mode, deltas);
+}
+
+// ─── Affichage résultat ───────────────────────────────────────────────────────
+function showResult(result, mode, deltas){
+  $('resultWordLabel').textContent = '« '+word+' »';
+  const b = $('verdictBanner');
+  b.className = 'verdict-banner '+result.verdict;
+  b.textContent = result.verdict==='gauche' ? "C'EST DE GAUCHE ✊" : "C'EST DE DROITE 💼";
+  const badge = $('modeBadge');
+  if(mode==='ia'){ badge.className='mode-badge mode-ia'; badge.textContent='🤖 Verdict IA' }
+  else{ badge.className='mode-badge mode-maj'; badge.textContent='🗳️ '+(result.modeLabel||'Vote majoritaire') }
+  $('explainBox').textContent = '💬 '+result.explication;
+  $('resChips').innerHTML = players.map(p=>{
+    const ok = deltas[p]===1;
+    return `<span class="res-chip ${ok?'res-win':'res-lose'}">${ok?'✅':'❌'} ${esc(p)} ${ok?'+1':''}</span>`;
+  }).join('');
+  $('resultLeader').innerHTML = leaderboardHtml();
+  $('resultTable').innerHTML = roundsTableHtml();
+  screen('resultScreen');
+}
+
+// ─── Leaderboard & tableau ────────────────────────────────────────────────────
+function leaderboardHtml(){
+  scores = getScores();
+  const rows = Object.entries(scores).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  if(!rows.length) return '<p class="mini">Aucun score pour le moment.</p>';
+  const medals = ['🥇','🥈','🥉'];
+  return `<div class="leader">${rows.map((r,i)=>`<div class="leader-card"><div class="rank">${medals[i]||'#'+(i+1)}</div><strong>${esc(r[0])}</strong><div class="score">${r[1]}</div></div>`).join('')}</div>`;
+}
+function roundsTableHtml(){
+  rounds = getRounds(); scores = getScores();
+  if(!rounds.length) return '<p class="mini">Aucune manche jouée.</p>';
+  const allPlayers = [...new Set([...Object.keys(scores), ...rounds.flatMap(r=>r.players||[])])];
+  return `<div class="table-wrap"><table><thead><tr><th>Joueur</th>${rounds.map(r=>`<th>M${r.n}<br><span class="mini">${esc(r.word)}</span><br><span class="${r.verdict==='gauche'?'g-tag':'d-tag'}">${r.verdict==='gauche'?'✊ G':'💼 D'}</span></th>`).join('')}<th>Total</th></tr></thead><tbody>${
+    allPlayers.map(p=>`<tr><td>${esc(p)}</td>${rounds.map(r=>{
+      if(!(r.players||[]).includes(p)) return '<td class="zero">·</td>';
+      const v = (r.deltas||{})[p]??0;
+      return `<td class="${v>0?'pos':'zero'}">${v>0?'+1':'0'}</td>`;
+    }).join('')}<td><strong>${scores[p]||0}</strong></td></tr>`).join('')
+  }</tbody></table></div>`;
+}
+
+// ─── Overlays ─────────────────────────────────────────────────────────────────
+function showScoresOverlay(){
+  $('scoresOverlayContent').innerHTML = `<h3 class="sec">🏆 Leaderboard</h3>${leaderboardHtml()}<h3 class="sec">📊 Points par manche</h3>${roundsTableHtml()}`;
+  $('scoresOverlay').classList.add('show');
+}
+function showHistoryOverlay(){
+  rounds = getRounds();
+  const c = $('historyContent');
+  if(!rounds.length){ c.innerHTML = '<p class="mini">Aucune manche jouée pour le moment.</p>' }
+  else{
+    c.innerHTML = [...rounds].reverse().map(r=>{
+      const voteStr = Object.entries(r.votes||{}).map(([p,v])=>`${esc(p)} ${v==='gauche'?'✊':'💼'}`).join(' · ');
+      return `<div class="hist-item">
+        <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+          <span class="hist-word">M${r.n} · ${esc(r.word)}</span>
+          <span class="hist-verdict ${r.verdict}">${r.verdict==='gauche'?'✊ GAUCHE':'💼 DROITE'} <span class="mini">(${esc(r.mode||'')})</span></span>
+        </div>
+        <div style="font-style:italic;margin:4px 0">💬 ${esc(r.explication||'')}</div>
+        <div class="mini">${voteStr}</div>
+        <div class="mini" style="opacity:.7">${esc(r.date||'')}</div>
+      </div>`;
+    }).join('');
+  }
+  $('historyOverlay').classList.add('show');
+}
+function showSettingsOverlay(){
+  $('apiKeyInput').value = getApiKey();
+  $('apiTestResult').textContent = '';
+  $('settingsOverlay').classList.add('show');
+}
+function saveApiKey(){
+  localStorage.setItem(APIKEY_KEY, $('apiKeyInput').value.trim());
+  $('apiTestResult').textContent = '💾 Clé enregistrée.';
+  renderApiStatus();
+}
+async function testApiKey(){
+  localStorage.setItem(APIKEY_KEY, $('apiKeyInput').value.trim());
+  renderApiStatus();
+  const r = $('apiTestResult');
+  r.textContent = '🧪 Test en cours…';
+  try{
+    const res = await askGemini('la baguette');
+    r.textContent = `✅ Ça marche (${res.model}) — « la baguette » est de ${res.verdict} : ${res.explication}`;
+  }catch(e){
+    r.textContent = '❌ Échec : clé invalide, quota dépassé ou pas de réseau.';
+  }
+}
+function hideOverlay(id){ $(id).classList.remove('show') }
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+if(!getProfiles()) saveProfiles(DEFAULT_PROFILES);
+renderProfileChips(); renderSelectedChips(); renderApiStatus();
+</script>
+</body>
+</html>
