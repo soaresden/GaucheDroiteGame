@@ -7,245 +7,201 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --night:#1a1030;--purple:#2d1b4e;--cream:#fff7e6;--ink:#221636;--muted:#6b5f89;--line:#4a3a70;
+  --night:#1a1030;--cream:#fff7e6;--ink:#221636;--muted:#6b5f89;--line:#4a3a70;
   --yellow:#ffb703;
   --gauche:#e63946;--gauche-dark:#9d0208;
   --droite:#2667c9;--droite-dark:#123c7a;
-  --green:#2a9d8f;--white:#fff
+  --green:#2a9d8f
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{min-height:100vh;padding:10px;font-family:'DM Sans',sans-serif;color:var(--ink);display:flex;align-items:center;justify-content:center;background:linear-gradient(120deg,var(--gauche-dark) -20%,var(--night) 38%,var(--night) 62%,var(--droite-dark) 120%);overflow-x:hidden}
+body{min-height:100vh;padding:10px;font-family:'DM Sans',sans-serif;color:var(--ink);background:linear-gradient(120deg,var(--gauche-dark) -20%,var(--night) 38%,var(--night) 62%,var(--droite-dark) 120%);overflow-x:hidden}
 body:before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 12% 12%,rgba(230,57,70,.28),transparent 30%),radial-gradient(circle at 88% 12%,rgba(38,103,201,.28),transparent 30%),radial-gradient(circle at 50% 105%,rgba(255,183,3,.14),transparent 40%)}
 
-/* Screens */
-.screen{display:none;width:100%;max-width:780px;position:relative;z-index:1;animation:fade .22s ease}
-.screen.active{display:block}
-@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* Layout 2 colonnes */
+.app{display:grid;grid-template-columns:1fr 330px;gap:12px;max-width:1250px;margin:0 auto;position:relative;z-index:1;align-items:start}
+.panel{background:linear-gradient(180deg,var(--cream),#fff);border:1px solid rgba(23,33,58,.20);border-radius:18px;padding:14px;box-shadow:0 14px 45px rgba(0,0,0,.28)}
+aside .panel{margin-bottom:12px}
 
-/* Panels & cards */
-.panel,.card{background:linear-gradient(180deg,var(--cream),#fff);border:1px solid rgba(23,33,58,.20);border-radius:22px;padding:16px;box-shadow:0 18px 55px rgba(0,0,0,.28)}
-
-/* Typography */
-h1{font-family:'Bebas Neue';font-size:56px;letter-spacing:4px;line-height:.9;text-align:center;color:var(--ink)}
-h1 .g{color:var(--gauche);text-shadow:2px 2px 0 rgba(157,2,8,.25)}
-h1 .d{color:var(--droite);text-shadow:2px 2px 0 rgba(18,60,122,.25)}
-.subtitle,.kicker{font-size:11px;text-align:center;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);font-weight:800}
-.subtitle{margin:6px 0 18px}
-.title{font-family:'Bebas Neue';font-size:32px;letter-spacing:3px;text-align:center;color:var(--cream);text-shadow:2px 2px 0 rgba(0,0,0,.3);margin-bottom:10px}
-label{display:block;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:800;margin-bottom:6px}
+/* Typo */
+h1{font-family:'Bebas Neue';font-size:38px;letter-spacing:3px;line-height:.9;color:var(--ink)}
+h1 .g{color:var(--gauche)}
+h1 .d{color:var(--droite)}
+h2{font-family:'Bebas Neue';font-size:22px;letter-spacing:2px;margin-bottom:8px}
+label{display:block;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:800;margin-bottom:5px}
 .mini{font-size:11px;color:var(--muted);line-height:1.35}
 
-/* Inputs */
-input[type=text],input[type=password]{width:100%;background:#fff;border:1px solid rgba(23,33,58,.25);border-radius:10px;padding:10px 10px;font-size:15px;color:var(--ink);outline:none}
-input[type=text]:focus,input[type=password]:focus{border-color:var(--yellow);box-shadow:0 0 0 3px rgba(255,183,3,.14)}
+/* Header */
+.head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.head .tools{display:flex;gap:6px}
+.tools button{border:2px solid var(--line);background:#fff;border-radius:10px;padding:6px 10px;font-size:15px;cursor:pointer}
+.tools button:active{transform:scale(.95)}
 
-/* Buttons */
-.btn{width:100%;border:0;border-radius:13px;padding:12px 10px;font-family:'Bebas Neue';font-size:20px;letter-spacing:2.5px;cursor:pointer;transition:.12s}
-.btn:active{transform:scale(.975)}
-.btn:disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
-.primary{background:linear-gradient(135deg,var(--yellow),#fb8500);color:var(--ink);box-shadow:0 8px 22px rgba(255,183,3,.22)}
-.ghost{background:#fff;color:var(--ink);border:2px solid var(--line)}
-.danger{background:linear-gradient(135deg,var(--gauche),var(--gauche-dark));color:#fff}
-.rowbtn{display:flex;gap:8px;margin-top:8px}
-.rowbtn .btn{flex:1}
-.split{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.full{grid-column:1/-1}
+/* Chips profils */
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0 8px;min-height:30px}
+.chip{padding:5px 12px;border-radius:99px;font-size:13px;font-weight:700;cursor:pointer;border:2px solid;transition:.12s;user-select:none;font-family:'DM Sans',sans-serif;background:#fff;border-color:rgba(23,33,58,.22);color:var(--ink)}
+.chip:active{transform:scale(.94)}
+.chip.in{background:rgba(255,183,3,.18);border-color:var(--yellow)}
+.addrow{display:flex;gap:6px}
+.addrow input{flex:1;background:#fff;border:1px solid rgba(23,33,58,.25);border-radius:9px;padding:7px 9px;font-size:13px;outline:none}
+.addrow button{border:2px solid var(--line);background:#fff;border-radius:9px;padding:0 13px;font-size:17px;cursor:pointer}
 
-/* Info box */
-.info{background:var(--cream);border:1px solid rgba(23,33,58,.18);border-radius:13px;padding:10px 12px;margin-bottom:10px;line-height:1.42;color:var(--muted);font-size:13px}
-.info strong{color:var(--ink)}
+/* Mot + verdict */
+.wordrow{display:flex;gap:8px;margin:10px 0}
+.wordrow input{flex:1;background:#fff;border:2px solid var(--line);border-radius:12px;padding:11px 12px;font-size:17px;font-weight:700;outline:none}
+.wordrow input:focus{border-color:var(--yellow);box-shadow:0 0 0 3px rgba(255,183,3,.14)}
+.verdict-btn{border:0;border-radius:12px;padding:11px 18px;font-family:'Bebas Neue';font-size:20px;letter-spacing:2px;cursor:pointer;background:linear-gradient(135deg,var(--yellow),#fb8500);color:var(--ink);box-shadow:0 6px 18px rgba(255,183,3,.25);white-space:nowrap}
+.verdict-btn:active{transform:scale(.97)}
+.verdict-btn:disabled{opacity:.4;cursor:not-allowed}
 
-/* Profile chips */
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 10px;min-height:36px}
-.chip{padding:7px 14px;border-radius:99px;font-size:14px;font-weight:700;cursor:pointer;border:2px solid;transition:.12s;user-select:none;font-family:'DM Sans',sans-serif;background:none}
-.chip:active{transform:scale(.95)}
-.chip-profile{background:#fff;border-color:rgba(23,33,58,.25);color:var(--ink)}
-.chip-profile:hover{border-color:var(--yellow);background:rgba(255,183,3,.08)}
-.chip-profile.used{opacity:.35;pointer-events:none}
-.chip-selected{background:rgba(255,183,3,.15);border-color:var(--yellow);color:var(--ink)}
-.chip-selected:hover{background:rgba(230,57,70,.12);border-color:var(--gauche)}
-.addrow{display:flex;gap:6px;margin:6px 0}
-.addrow input{flex:1}
-.addrow .btn{width:auto;padding:9px 14px;font-size:20px;line-height:1;min-width:44px}
+/* Tableau Gauche / Droite */
+.board{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0}
+.col{border-radius:14px;padding:10px;min-height:150px;border:2px solid}
+.col-title{font-family:'Bebas Neue';font-size:24px;letter-spacing:3px;text-align:center;margin-bottom:8px;color:#fff}
+.col-g{background:linear-gradient(160deg,rgba(230,57,70,.16),rgba(230,57,70,.05));border-color:var(--gauche)}
+.col-g .col-title{color:var(--gauche)}
+.col-d{background:linear-gradient(160deg,rgba(38,103,201,.16),rgba(38,103,201,.05));border-color:var(--droite)}
+.col-d .col-title{color:var(--droite)}
+.col .chips,.pool .chips{min-height:36px;justify-content:center}
+.pchip{padding:7px 14px;border-radius:99px;font-size:14px;font-weight:800;cursor:grab;border:2px solid;transition:.12s;user-select:none;touch-action:none}
+.pchip:active{transform:scale(.93)}
+.pchip.dragging{opacity:.35}
+.drag-ghost{position:fixed;z-index:100;pointer-events:none;transform:translate(-50%,-50%) scale(1.12);box-shadow:0 12px 32px rgba(0,0,0,.4);transition:none;margin:0}
+.col.dropover,.pool.dropover{outline:3px dashed var(--yellow);outline-offset:-3px;background-color:rgba(255,183,3,.10)}
+.pchip.neutral{background:#fff;border-color:rgba(23,33,58,.3);color:var(--ink)}
+.pchip.g{background:var(--gauche);border-color:var(--gauche-dark);color:#fff;box-shadow:0 4px 12px rgba(230,57,70,.35)}
+.pchip.d{background:var(--droite);border-color:var(--droite-dark);color:#fff;box-shadow:0 4px 12px rgba(38,103,201,.35)}
+.pool{border:2px dashed rgba(23,33,58,.25);border-radius:14px;padding:8px;text-align:center}
+.pool label{margin-bottom:2px}
+.help{font-size:11px;color:var(--muted);text-align:center;margin:4px 0}
 
-/* Mot affiché */
-.word{font-family:'Bebas Neue';font-size:44px;letter-spacing:4px;text-align:center;color:var(--yellow);background:var(--night);border:2px solid var(--yellow);border-radius:18px;padding:16px 12px;margin:10px 0;word-break:break-word}
+/* Statut IA */
+.ai-status{text-align:center;font-size:15px;font-weight:800;color:var(--ink);background:var(--cream);border:1px solid rgba(23,33,58,.18);border-radius:12px;padding:10px;margin:8px 0;animation:aipulse 1.2s ease-in-out infinite}
+@keyframes aipulse{50%{opacity:.45}}
 
-/* Cartes de vote joueur */
-.vote-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
-.pcard{background:linear-gradient(180deg,var(--cream),#fff);border:1px solid rgba(23,33,58,.2);border-radius:16px;padding:10px;box-shadow:0 8px 24px rgba(0,0,0,.18)}
-.pcard.voted{border-color:var(--green);box-shadow:0 0 0 2px rgba(42,157,143,.25)}
-.pname{font-family:'Bebas Neue';font-size:22px;letter-spacing:2px;text-align:center;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:6px}
-.pname .check{font-size:14px}
-.gd-row{display:flex;gap:8px}
-.gd-btn{flex:1;border:2px solid;border-radius:12px;padding:11px 4px;font-family:'Bebas Neue';font-size:19px;letter-spacing:2px;cursor:pointer;transition:.12s;background:#fff}
-.gd-btn:active{transform:scale(.95)}
-.gd-g{color:var(--gauche);border-color:var(--gauche)}
-.gd-g.sel{background:var(--gauche);color:#fff;box-shadow:0 6px 18px rgba(230,57,70,.4)}
-.gd-d{color:var(--droite);border-color:var(--droite)}
-.gd-d.sel{background:var(--droite);color:#fff;box-shadow:0 6px 18px rgba(38,103,201,.4)}
-
-/* Verdict */
-.verdict-banner{font-family:'Bebas Neue';font-size:62px;letter-spacing:6px;text-align:center;color:#fff;border-radius:18px;padding:20px 12px;margin:10px 0;line-height:.9}
-.verdict-banner.gauche{background:linear-gradient(135deg,var(--gauche),var(--gauche-dark));box-shadow:0 12px 40px rgba(230,57,70,.4)}
-.verdict-banner.droite{background:linear-gradient(135deg,var(--droite),var(--droite-dark));box-shadow:0 12px 40px rgba(38,103,201,.4)}
-.explain{background:var(--cream);border:1px solid rgba(23,33,58,.18);border-left:5px solid var(--yellow);border-radius:13px;padding:12px 14px;font-size:15px;line-height:1.5;color:var(--ink);margin:10px 0;font-style:italic}
-.mode-badge{display:inline-block;padding:4px 12px;border-radius:99px;font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
-.mode-ia{background:rgba(42,157,143,.15);color:var(--green);border:1px solid var(--green)}
-.mode-maj{background:rgba(255,183,3,.15);color:#b47500;border:1px solid var(--yellow)}
-
-/* Résultats joueurs */
-.res-chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:10px 0}
-.res-chip{padding:7px 14px;border-radius:99px;font-size:14px;font-weight:800;border:2px solid}
+/* Résultat inline */
+.result{margin-top:10px;display:none}
+.result.show{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.verdict-banner{font-family:'Bebas Neue';font-size:40px;letter-spacing:4px;text-align:center;color:#fff;border-radius:14px;padding:14px 10px;line-height:.9}
+.verdict-banner.gauche{background:linear-gradient(135deg,var(--gauche),var(--gauche-dark))}
+.verdict-banner.droite{background:linear-gradient(135deg,var(--droite),var(--droite-dark))}
+.explain{background:var(--cream);border:1px solid rgba(23,33,58,.18);border-left:5px solid var(--yellow);border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.5;font-style:italic;margin:8px 0}
+.res-chips{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin:8px 0}
+.res-chip{padding:5px 12px;border-radius:99px;font-size:13px;font-weight:800;border:2px solid}
 .res-win{background:rgba(42,157,143,.12);border-color:var(--green);color:var(--green)}
-.res-lose{background:rgba(107,95,137,.1);border-color:rgba(107,95,137,.4);color:var(--muted);text-decoration:line-through}
+.res-lose{background:rgba(107,95,137,.08);border-color:rgba(107,95,137,.35);color:var(--muted);text-decoration:line-through}
+.mode-badge{display:block;text-align:center;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin:6px 0}
+.next-btn{width:100%;border:0;border-radius:12px;padding:11px;font-family:'Bebas Neue';font-size:20px;letter-spacing:2px;cursor:pointer;background:linear-gradient(135deg,var(--yellow),#fb8500);color:var(--ink)}
 
-/* Loading */
-.loader{display:flex;flex-direction:column;align-items:center;gap:14px;padding:26px 10px}
-.balance{font-size:64px;animation:tilt 1.1s ease-in-out infinite}
-@keyframes tilt{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}
-.load-msg{font-size:14px;color:var(--muted);font-weight:700;text-align:center;min-height:20px}
-
-/* Floatbar & overlays */
-.floatbar{position:fixed;right:10px;top:10px;display:flex;gap:8px;z-index:20}
-.floatbar button{width:auto;padding:8px 11px;font-size:16px;border-radius:12px}
-.overlay{position:fixed;inset:0;background:rgba(10,8,24,.75);z-index:50;display:none;align-items:center;justify-content:center;padding:14px}
-.overlay.show{display:flex}
-.modal{background:#fff;border-radius:22px;padding:16px;width:min(980px,96vw);max-height:88vh;overflow:auto;box-shadow:0 25px 80px rgba(0,0,0,.35)}
-.modal-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
-.modal-title{font-family:'Bebas Neue';font-size:30px;letter-spacing:3px}
-.modal .btn{width:auto;padding:9px 14px;font-size:17px}
-
-/* Scores table */
-.table-wrap{overflow:auto;border-radius:14px;border:1px solid rgba(23,33,58,.18);margin-top:10px}
-table{width:100%;border-collapse:collapse;background:#fff;font-size:13px}
-th,td{padding:8px 9px;border-bottom:1px solid rgba(23,33,58,.12);text-align:center;white-space:nowrap}
-th{background:var(--cream);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
-td:first-child,th:first-child{text-align:left;font-weight:800}
-.pos{color:var(--green);font-weight:900}
-.zero{color:var(--muted);font-weight:900}
-th .g-tag{color:var(--gauche)}
-th .d-tag{color:var(--droite)}
-.leader{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
-.leader-card{background:#fff;border:1px solid rgba(23,33,58,.16);border-radius:14px;padding:10px;text-align:center}
-.rank{font-family:'Bebas Neue';font-size:24px;color:var(--yellow)}
-.score{font-family:'Bebas Neue';font-size:34px;color:var(--ink)}
-.hist-item{background:var(--cream);border:1px solid rgba(23,33,58,.15);border-radius:13px;padding:10px 12px;margin-bottom:8px;font-size:13px;line-height:1.45}
-.hist-word{font-family:'Bebas Neue';font-size:20px;letter-spacing:2px}
-.hist-verdict{font-weight:900;text-transform:uppercase;letter-spacing:1px}
+/* Sidebar : leaderboard + historique */
+.lb-row{display:flex;justify-content:space-between;align-items:center;padding:5px 8px;border-radius:9px;font-size:14px;font-weight:700}
+.lb-row:nth-child(odd){background:rgba(23,33,58,.045)}
+.lb-row .pts{font-family:'Bebas Neue';font-size:19px}
+.lb-row .medal{width:26px;display:inline-block}
+.hist-list{max-height:62vh;overflow:auto;display:flex;flex-direction:column;gap:7px}
+.hist-item{background:var(--cream);border:1px solid rgba(23,33,58,.14);border-radius:11px;padding:8px 10px;font-size:12px;line-height:1.4}
+.hist-top{display:flex;justify-content:space-between;gap:6px;flex-wrap:wrap;align-items:baseline}
+.hist-word{font-family:'Bebas Neue';font-size:17px;letter-spacing:1.5px}
+.hist-verdict{font-weight:900;letter-spacing:.5px}
 .hist-verdict.gauche{color:var(--gauche)}
 .hist-verdict.droite{color:var(--droite)}
-.hidden{display:none!important}
-hr{border:0;border-top:1px solid rgba(23,33,58,.22);margin:14px 0}
-h3.sec{font-family:'Bebas Neue';font-size:28px;letter-spacing:2px;margin-top:8px}
+.hist-exp{font-style:italic;color:var(--muted);margin:3px 0}
+.hist-votes{color:var(--muted)}
+
+/* Overlay réglages */
+.overlay{position:fixed;inset:0;background:rgba(10,8,24,.75);z-index:50;display:none;align-items:center;justify-content:center;padding:14px}
+.overlay.show{display:flex}
+.modal{background:#fff;border-radius:18px;padding:16px;width:min(600px,95vw);max-height:88vh;overflow:auto}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.modal-title{font-family:'Bebas Neue';font-size:26px;letter-spacing:2px}
+.modal input{width:100%;background:#fff;border:1px solid rgba(23,33,58,.25);border-radius:10px;padding:10px;font-size:14px;outline:none}
+.modal .btn{border:2px solid var(--line);background:#fff;border-radius:10px;padding:8px 14px;font-family:'Bebas Neue';font-size:16px;letter-spacing:1.5px;cursor:pointer}
+.modal .btn.red{background:linear-gradient(135deg,var(--gauche),var(--gauche-dark));color:#fff;border:0}
+.rowbtn{display:flex;gap:8px;margin-top:8px}
+.info{background:var(--cream);border:1px solid rgba(23,33,58,.18);border-radius:12px;padding:9px 11px;margin-bottom:10px;line-height:1.4;color:var(--muted);font-size:12px}
+.info strong{color:var(--ink)}
 
 /* Responsive */
-@media(max-width:700px){.screen{max-width:540px}.split,.leader{grid-template-columns:1fr}.floatbar{top:auto;bottom:10px;right:10px}}
-@media(max-width:520px){.vote-grid{grid-template-columns:1fr}}
-@media(max-width:430px){h1{font-size:42px}.word{font-size:34px}.title{font-size:26px}.verdict-banner{font-size:48px}}
+@media(max-width:980px){
+  .app{grid-template-columns:1fr}
+  .hist-list{max-height:40vh}
+}
+@media(max-width:520px){
+  h1{font-size:30px}
+  .board{grid-template-columns:1fr 1fr;gap:6px}
+  .col{min-height:110px;padding:7px}
+  .col-title{font-size:19px}
+  .verdict-banner{font-size:30px}
+  .wordrow{flex-wrap:wrap}
+  .verdict-btn{flex:1}
+}
 </style>
 </head>
 <body>
 
-<div class="floatbar">
-  <button class="btn ghost" onclick="showScoresOverlay()">🏆</button>
-  <button class="btn ghost" onclick="showHistoryOverlay()">📜</button>
-  <button class="btn ghost" onclick="showSettingsOverlay()">⚙️</button>
-</div>
+<div class="app">
 
-<!-- ACCUEIL -->
-<section class="screen active" id="home">
-  <div class="panel">
-    <h1><span class="g">GAUCHE</span> OU <span class="d">DROITE</span> ?</h1>
-    <p class="subtitle">L'intelligence artificielle tranche · à ne pas prendre au premier degré</p>
-    <label>PROFILS <span style="font-size:11px;letter-spacing:1px;text-transform:none;font-weight:400;color:var(--muted)">· appui long pour supprimer</span></label>
+  <!-- ═══ COLONNE PRINCIPALE ═══ -->
+  <main class="panel">
+    <div class="head">
+      <h1><span class="g">GAUCHE</span> OU <span class="d">DROITE</span> ?</h1>
+      <div class="tools">
+        <button onclick="showSettings()" title="Réglages">⚙️</button>
+        <button onclick="resetAllData()" title="Reset scores">🧹</button>
+      </div>
+    </div>
+
+    <label>JOUEURS <span style="text-transform:none;font-weight:400">· appuie pour ajouter/retirer · appui long pour supprimer le profil</span></label>
     <div id="profileChips" class="chips"></div>
     <div class="addrow">
       <input type="text" id="newProfile" placeholder="Ajouter un prénom…" maxlength="20" onkeydown="if(event.key==='Enter')addProfile()">
-      <button class="btn ghost" onclick="addProfile()">＋</button>
+      <button onclick="addProfile()">＋</button>
     </div>
-    <label style="margin-top:10px">JOUEURS <span id="selectedCount" style="font-size:11px;font-weight:400;color:var(--muted)">(0 sélectionné)</span></label>
-    <div id="selectedChips" class="chips"></div>
-    <div class="info" id="apiStatus" style="margin-top:6px"></div>
-    <div class="split" style="margin-top:6px">
-      <button class="btn ghost" onclick="resetAllData()">🧹 RESET SCORES</button>
-      <button class="btn primary" id="startBtn" onclick="startRound()">JOUER →</button>
+
+    <div class="wordrow">
+      <input type="text" id="wordInput" placeholder="Un mot ou une expression… (la raclette, les ronds-points…)" maxlength="60" oninput="renderVerdictBtn()" onkeydown="if(event.key==='Enter'&&!$('verdictBtn').disabled)revealVerdict()">
+      <button class="verdict-btn" id="verdictBtn" onclick="revealVerdict()" disabled>⚖️ VERDICT</button>
     </div>
-  </div>
-</section>
 
-<!-- MOT -->
-<section class="screen" id="wordScreen">
-  <div class="title">MANCHE <span id="roundNum">1</span></div>
-  <div class="panel">
-    <label>PROPOSE UN MOT OU UNE EXPRESSION</label>
-    <input type="text" id="wordInput" placeholder="Ex : la raclette, le vélo, les ronds-points…" maxlength="60" onkeydown="if(event.key==='Enter')goVote()">
-    <div class="rowbtn">
-      <button class="btn ghost" onclick="goHome()">← MENU</button>
-      <button class="btn primary" onclick="goVote()">C'EST PARTI →</button>
-    </div>
-  </div>
-</section>
-
-<!-- VOTES -->
-<section class="screen" id="voteScreen">
-  <div class="title">ALORS, C'EST DE GAUCHE OU DE DROITE ?</div>
-  <div class="word" id="voteWord"></div>
-  <div class="vote-grid" id="voteGrid"></div>
-  <button class="btn primary" id="verdictBtn" onclick="revealVerdict()" disabled>⚖️ VERDICT DE L'IA</button>
-  <button class="btn ghost" style="margin-top:8px" onclick="backToWord()">← CHANGER DE MOT</button>
-</section>
-
-<!-- CHARGEMENT -->
-<section class="screen" id="loadingScreen">
-  <div class="card loader">
-    <div class="balance">⚖️</div>
-    <div class="load-msg" id="loadMsg">L'IA consulte son idéologie…</div>
-  </div>
-</section>
-
-<!-- RÉSULTAT -->
-<section class="screen" id="resultScreen">
-  <div class="card">
-    <div class="kicker" id="resultWordLabel"></div>
-    <div class="verdict-banner" id="verdictBanner"></div>
-    <div style="text-align:center"><span class="mode-badge" id="modeBadge"></span></div>
-    <div class="explain" id="explainBox"></div>
-    <h3 class="sec" style="text-align:center">Qui a bien voté ? <span style="font-size:16px;color:var(--muted)">(+1 point)</span></h3>
-    <div class="res-chips" id="resChips"></div>
-    <h3 class="sec">🏆 Leaderboard</h3>
-    <div id="resultLeader"></div>
-    <h3 class="sec">📊 Points par manche</h3>
-    <div id="resultTable"></div>
-  </div>
-  <hr>
-  <button class="btn primary" onclick="nextRound()">MOT SUIVANT →</button>
-  <button class="btn ghost" style="margin-top:8px" onclick="goHome()">MENU PRINCIPAL</button>
-</section>
-
-<!-- OVERLAY SCORES -->
-<div class="overlay" id="scoresOverlay">
-  <div class="modal">
-    <div class="modal-head">
-      <div class="modal-title">🏆 SCORES</div>
-      <div class="rowbtn" style="margin:0">
-        <button class="btn ghost" onclick="resetAllData();showScoresOverlay()">RESET</button>
-        <button class="btn danger" onclick="hideOverlay('scoresOverlay')">FERMER</button>
+    <!-- Tableau Gauche / Droite -->
+    <div class="board">
+      <div class="col col-g" onclick="colClick(event,'gauche')">
+        <div class="col-title">✊ GAUCHE</div>
+        <div class="chips" id="colG"></div>
+      </div>
+      <div class="col col-d" onclick="colClick(event,'droite')">
+        <div class="col-title">💼 DROITE</div>
+        <div class="chips" id="colD"></div>
       </div>
     </div>
-    <div id="scoresOverlayContent"></div>
-  </div>
-</div>
-
-<!-- OVERLAY HISTORIQUE -->
-<div class="overlay" id="historyOverlay">
-  <div class="modal">
-    <div class="modal-head">
-      <div class="modal-title">📜 HISTORIQUE</div>
-      <button class="btn danger" onclick="hideOverlay('historyOverlay')">FERMER</button>
+    <div class="pool" id="poolBox">
+      <label>EN ATTENTE DE VOTE</label>
+      <div class="chips" id="pool"></div>
     </div>
-    <div id="historyContent"></div>
-  </div>
+    <p class="help">Glisse les prénoms dans les zones ✊ / 💼 (un simple appui les fait aussi tourner : attente → gauche → droite)</p>
+    <p class="ai-status" id="aiStatus" style="display:none">🤖 L'IA cherche…</p>
+
+    <!-- Résultat inline -->
+    <div class="result" id="result">
+      <div class="verdict-banner" id="verdictBanner"></div>
+      <span class="mode-badge" id="modeBadge"></span>
+      <div class="explain" id="explainBox"></div>
+      <div class="res-chips" id="resChips"></div>
+      <button class="next-btn" onclick="nextRound()">🔄 MANCHE SUIVANTE</button>
+    </div>
+  </main>
+
+  <!-- ═══ SIDEBAR DROITE ═══ -->
+  <aside>
+    <div class="panel">
+      <h2>🏆 LEADERBOARD</h2>
+      <div id="leaderboard"></div>
+    </div>
+    <div class="panel">
+      <h2>📜 HISTORIQUE</h2>
+      <div class="hist-list" id="histList"></div>
+    </div>
+  </aside>
 </div>
 
 <!-- OVERLAY RÉGLAGES -->
@@ -253,14 +209,14 @@ h3.sec{font-family:'Bebas Neue';font-size:28px;letter-spacing:2px;margin-top:8px
   <div class="modal">
     <div class="modal-head">
       <div class="modal-title">⚙️ RÉGLAGES</div>
-      <button class="btn danger" onclick="hideOverlay('settingsOverlay')">FERMER</button>
+      <button class="btn red" onclick="hideSettings()">FERMER</button>
     </div>
-    <div class="info">🤖 Avec une <strong>clé API Gemini</strong> (gratuite sur <strong>aistudio.google.com</strong>), l'IA tranche et donne une <strong>explication</strong>, comme le site original mais en mieux. Sans clé, c'est le <strong>vote majoritaire</strong> des joueurs qui décide.</div>
-    <label>CLÉ API GEMINI</label>
-    <input type="password" id="apiKeyInput" placeholder="AIza…">
+    <div class="info">🤖 Par défaut le jeu utilise une <strong>IA publique gratuite sans clé</strong> (Pollinations). Optionnel : une <strong>clé API Gemini</strong> (gratuite sur <strong>aistudio.google.com</strong>) pour des verdicts plus rapides et fiables. En dernier recours (pas de réseau), c'est le <strong>vote majoritaire</strong> qui tranche.</div>
+    <label>CLÉ API GEMINI (OPTIONNELLE)</label>
+    <input type="password" id="apiKeyInput" placeholder="AIza… ou AQ.…">
     <div class="rowbtn">
-      <button class="btn ghost" onclick="saveApiKey()">💾 ENREGISTRER</button>
-      <button class="btn ghost" onclick="testApiKey()">🧪 TESTER</button>
+      <button class="btn" onclick="saveApiKey()">💾 ENREGISTRER</button>
+      <button class="btn" onclick="testApiKey()">🧪 TESTER</button>
     </div>
     <p class="mini" id="apiTestResult" style="margin-top:8px"></p>
   </div>
@@ -272,28 +228,23 @@ const SCORE_KEY    = 'gd_scores_v1';
 const ROUNDS_KEY   = 'gd_rounds_v1';
 const PROFILES_KEY = 'gd_profiles_v1';
 const APIKEY_KEY   = 'gd_gemini_key';
+// Clé par défaut intégrée (⚠️ visible par tous si le repo est public).
+// La clé saisie dans ⚙️ (localStorage) a priorité sur celle-ci.
+const DEFAULT_API_KEY = 'AQ.Ab8RN6L5x4JZY1dLMN6Wel8opacIXaSeW3NcsnfwdD9tCDV1sg';
 
-const DEFAULT_PROFILES = ['Denis','Cedric','Pauline','Benoit','Risleine','Marine','Marion','Emmanuel','Katy','Loris','Thibaut','Pierre','Anne','Sophie','Anthony','Leo','Nicolas','Raphael','Thomas','Li'];
+const DEFAULT_PROFILES = ['Anne','Anthony','Benoit','Cedric','Denis','Emmanuel','Katy','Leo','Li','Loris','Marine','Marion','Nicolas','Pauline','Pierre','Raphael','Risleine','Sophie','Thibaut','Thomas'];
+let txtProfiles = null; // profils chargés depuis players.txt (1 nom par ligne)
 
 const GEMINI_MODELS = ['gemini-2.5-flash','gemini-2.5-flash-lite','gemini-2.0-flash','gemini-2.0-flash-lite'];
 
-const LOAD_MSGS = [
-  "L'IA consulte son idéologie…",
-  "Relecture du programme des partis…",
-  "Sondage express des zincs de bistrot…",
-  "Analyse du positionnement sociologique…",
-  "L'IA hésite… non, elle tranche.",
-  "Vérification auprès de tonton au repas de famille…"
-];
-
 // ─── État ─────────────────────────────────────────────────────────────────────
-let selectedPlayers = [], players = [];
-let word = '', votes = {}, scores = {}, rounds = [];
-let loadInt = null;
+let participants = [];        // joueurs de la partie (sélectionnés)
+let placement = {};           // {nom: 'gauche'|'droite'|null}
+let phase = 'placing';        // 'placing' | 'done'
+let scores = {}, rounds = [];
 
 // ─── Utilitaires ──────────────────────────────────────────────────────────────
 function $(id){ return document.getElementById(id) }
-function screen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); $(id).classList.add('active') }
 function esc(s){ return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])) }
 
 // ─── Stockage ─────────────────────────────────────────────────────────────────
@@ -301,112 +252,194 @@ function getScores(){ try{ return JSON.parse(localStorage.getItem(SCORE_KEY)||'{
 function getRounds(){ try{ return JSON.parse(localStorage.getItem(ROUNDS_KEY)||'[]') }catch(e){ return [] } }
 function saveScores(){ localStorage.setItem(SCORE_KEY, JSON.stringify(scores)) }
 function saveRounds(){ localStorage.setItem(ROUNDS_KEY, JSON.stringify(rounds)) }
-function getProfiles(){ try{ return JSON.parse(localStorage.getItem(PROFILES_KEY)||'null') }catch(e){ return null } }
-function saveProfiles(l){ localStorage.setItem(PROFILES_KEY, JSON.stringify(l)) }
-function getApiKey(){ return (localStorage.getItem(APIKEY_KEY)||'').trim() }
+function getApiKey(){ return (localStorage.getItem(APIKEY_KEY)||'').trim() || DEFAULT_API_KEY }
 
-// ─── Profils (blocs joueurs) ──────────────────────────────────────────────────
-function renderProfileChips(){
-  const profiles = getProfiles() || DEFAULT_PROFILES;
+// Profils = players.txt (si lisible) + ajouts manuels − suppressions (localStorage)
+function getExtras(){ try{ return JSON.parse(localStorage.getItem(PROFILES_KEY+'_extra')||'[]') }catch(e){ return [] } }
+function getRemoved(){ try{ return JSON.parse(localStorage.getItem(PROFILES_KEY+'_removed')||'[]') }catch(e){ return [] } }
+function saveExtras(l){ localStorage.setItem(PROFILES_KEY+'_extra', JSON.stringify(l)) }
+function saveRemoved(l){ localStorage.setItem(PROFILES_KEY+'_removed', JSON.stringify(l)) }
+function getProfiles(){
+  const base = txtProfiles || DEFAULT_PROFILES;
+  const removed = getRemoved();
+  return [...new Set([...base, ...getExtras()])].filter(p=>!removed.includes(p));
+}
+async function loadPlayersTxt(){
+  try{
+    const res = await fetch('players.txt', {cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const names = (await res.text()).split(/\r?\n|,|;/).map(s=>s.trim()).filter(Boolean);
+    if(names.length) txtProfiles = [...new Set(names)];
+  }catch(e){
+    console.warn('players.txt non lisible ('+e.message+'), profils par défaut utilisés');
+  }
+  renderProfiles();
+}
+
+// ─── Profils ──────────────────────────────────────────────────────────────────
+function renderProfiles(){
   const c = $('profileChips'); c.innerHTML = '';
-  profiles.forEach(name=>{
+  getProfiles().forEach(name=>{
     const b = document.createElement('button');
-    b.className = 'chip chip-profile' + (selectedPlayers.includes(name)?' used':'');
-    b.textContent = name; b.title = 'Appui long pour supprimer';
+    b.className = 'chip' + (participants.includes(name)?' in':'');
+    b.textContent = (participants.includes(name)?'✓ ':'')+name;
     let t = null;
     b.addEventListener('pointerdown',()=>{ t=setTimeout(()=>{ if(confirm('Supprimer "'+name+'" des profils ?')) removeProfile(name) },600) });
     b.addEventListener('pointerup',()=>clearTimeout(t));
     b.addEventListener('pointerleave',()=>clearTimeout(t));
-    b.onclick = ()=>selectPlayer(name);
+    b.onclick = ()=>toggleParticipant(name);
     b.oncontextmenu = e=>{ e.preventDefault(); removeProfile(name) };
     c.appendChild(b);
   });
 }
-function renderSelectedChips(){
-  const c = $('selectedChips'); c.innerHTML = '';
-  selectedPlayers.forEach((name,i)=>{
-    const b = document.createElement('button');
-    b.className = 'chip chip-selected'; b.textContent = name+' ✕';
-    b.onclick = ()=>removeSelected(i);
-    c.appendChild(b);
-  });
-  $('selectedCount').textContent = '('+selectedPlayers.length+' sélectionné'+(selectedPlayers.length>1?'s':'')+')';
-  $('startBtn').disabled = selectedPlayers.length < 2;
+function toggleParticipant(name){
+  if(participants.includes(name)){
+    participants = participants.filter(p=>p!==name);
+    delete placement[name];
+  }else{
+    participants.push(name);
+    placement[name] = null;
+  }
+  renderProfiles(); renderBoard(); renderVerdictBtn();
 }
-function selectPlayer(name){ if(selectedPlayers.includes(name))return; selectedPlayers.push(name); renderProfileChips(); renderSelectedChips() }
-function removeSelected(i){ selectedPlayers.splice(i,1); renderProfileChips(); renderSelectedChips() }
 function addProfile(){
   const inp = $('newProfile'), name = inp.value.trim(); if(!name)return;
-  const profiles = getProfiles()||[];
-  if(!profiles.includes(name)){ profiles.push(name); saveProfiles(profiles) }
-  inp.value=''; selectPlayer(name);
+  saveRemoved(getRemoved().filter(p=>p!==name));
+  const extras = getExtras();
+  if(!getProfiles().includes(name) && !extras.includes(name)){ extras.push(name); saveExtras(extras) }
+  inp.value='';
+  if(!participants.includes(name)) toggleParticipant(name); else renderProfiles();
 }
 function removeProfile(name){
-  saveProfiles((getProfiles()||[]).filter(p=>p!==name));
-  selectedPlayers = selectedPlayers.filter(p=>p!==name);
-  renderProfileChips(); renderSelectedChips();
+  saveExtras(getExtras().filter(p=>p!==name));
+  const removed = getRemoved();
+  if(!removed.includes(name)){ removed.push(name); saveRemoved(removed) }
+  participants = participants.filter(p=>p!==name);
+  delete placement[name];
+  renderProfiles(); renderBoard(); renderVerdictBtn();
 }
 function resetAllData(){
   if(confirm('Remettre scores et historique à zéro ?')){
-    scores={}; rounds=[]; saveScores(); saveRounds(); alert('Reset OK ✅');
+    scores={}; rounds=[]; saveScores(); saveRounds();
+    renderLeaderboard(); renderHistory();
   }
 }
 
-// ─── Statut API ───────────────────────────────────────────────────────────────
-function renderApiStatus(){
-  $('apiStatus').innerHTML = getApiKey()
-    ? '🤖 <strong>Mode IA activé</strong> — Gemini tranche et explique son verdict.'
-    : '🗳️ <strong>Mode vote majoritaire</strong> — pas de clé API. Ajoute une clé Gemini dans ⚙️ pour avoir le verdict IA + explication.';
+// ─── Tableau Gauche / Droite (drag & drop tactile + souris) ──────────────────
+function makeChip(name){
+  const side = placement[name];
+  const b = document.createElement('button');
+  b.className = 'pchip ' + (side==='gauche'?'g':side==='droite'?'d':'neutral');
+  b.textContent = name;
+  b.addEventListener('pointerdown', e=>startDrag(e, name, b));
+  return b;
+}
+function cycleChip(name){
+  if(phase==='done') return;
+  const s = placement[name];
+  placement[name] = s===null ? 'gauche' : s==='gauche' ? 'droite' : null;
+  renderBoard(); renderVerdictBtn();
+}
+function colClick(e, side){
+  // Appuyer sur une colonne vide y envoie le premier joueur en attente
+  if(phase==='done' || e.target.closest('.pchip')) return;
+  const waiting = participants.find(p=>placement[p]===null);
+  if(waiting){ placement[waiting] = side; renderBoard(); renderVerdictBtn() }
 }
 
-// ─── Déroulement ──────────────────────────────────────────────────────────────
-function startRound(){
-  players = [...selectedPlayers];
-  scores = getScores(); rounds = getRounds();
-  players.forEach(p=>{ if(scores[p]===undefined) scores[p]=0 });
-  saveScores();
-  $('roundNum').textContent = rounds.length + 1;
-  $('wordInput').value = '';
-  screen('wordScreen');
-  setTimeout(()=>$('wordInput').focus(),250);
+let drag = null;
+function startDrag(e, name, chip){
+  if(phase==='done') return;
+  e.preventDefault();
+  const ghost = chip.cloneNode(true);
+  ghost.classList.add('drag-ghost');
+  ghost.style.display = 'none';
+  document.body.appendChild(ghost);
+  drag = { name, chip, ghost, moved:false, startX:e.clientX, startY:e.clientY };
+  positionGhost(e);
+  window.addEventListener('pointermove', onDragMove);
+  window.addEventListener('pointerup', onDragEnd, {once:true});
+  window.addEventListener('pointercancel', cancelDrag, {once:true});
 }
-function nextRound(){ startRound() }
-function backToWord(){ screen('wordScreen'); setTimeout(()=>$('wordInput').focus(),250) }
-function goHome(){ renderProfileChips(); renderSelectedChips(); renderApiStatus(); screen('home') }
+function positionGhost(e){ drag.ghost.style.left = e.clientX+'px'; drag.ghost.style.top = e.clientY+'px' }
+function zoneAt(x, y){
+  const el = document.elementFromPoint(x, y);
+  if(!el) return undefined;
+  if(el.closest('.col-g')) return 'gauche';
+  if(el.closest('.col-d')) return 'droite';
+  if(el.closest('.pool'))  return 'pool';
+  return undefined;
+}
+function highlightZone(z){
+  document.querySelector('.col-g').classList.toggle('dropover', z==='gauche');
+  document.querySelector('.col-d').classList.toggle('dropover', z==='droite');
+  $('poolBox').classList.toggle('dropover', z==='pool');
+}
+function onDragMove(e){
+  if(!drag) return;
+  if(!drag.moved && Math.hypot(e.clientX-drag.startX, e.clientY-drag.startY) > 6){
+    drag.moved = true;
+    drag.ghost.style.display = '';
+    drag.chip.classList.add('dragging');
+  }
+  if(drag.moved){ positionGhost(e); highlightZone(zoneAt(e.clientX, e.clientY)) }
+}
+function onDragEnd(e){
+  window.removeEventListener('pointermove', onDragMove);
+  const d = drag; drag = null;
+  if(!d) return;
+  d.ghost.remove(); d.chip.classList.remove('dragging'); highlightZone(undefined);
+  if(!d.moved){ cycleChip(d.name); return }   // simple appui = cycle
+  const z = zoneAt(e.clientX, e.clientY);
+  if(z==='gauche'||z==='droite') placement[d.name] = z;
+  else if(z==='pool')            placement[d.name] = null;
+  renderBoard(); renderVerdictBtn();
+}
+function cancelDrag(){
+  window.removeEventListener('pointermove', onDragMove);
+  if(drag){ drag.ghost.remove(); drag.chip.classList.remove('dragging'); highlightZone(undefined); drag = null }
+}
 
-function goVote(){
-  const w = $('wordInput').value.trim();
-  if(!w){ alert('Écris un mot ou une expression !'); return }
-  word = w; votes = {};
-  $('voteWord').textContent = word;
-  renderVoteGrid();
-  screen('voteScreen');
-}
-function renderVoteGrid(){
-  const g = $('voteGrid'); g.innerHTML = '';
-  players.forEach((p,i)=>{
-    const card = document.createElement('div');
-    card.className = 'pcard' + (votes[p]?' voted':'');
-    card.innerHTML = `
-      <div class="pname">${esc(p)} <span class="check">${votes[p]?'✅':''}</span></div>
-      <div class="gd-row">
-        <button class="gd-btn gd-g ${votes[p]==='gauche'?'sel':''}" onclick="castVote(${i},'gauche')">✊ GAUCHE</button>
-        <button class="gd-btn gd-d ${votes[p]==='droite'?'sel':''}" onclick="castVote(${i},'droite')">💼 DROITE</button>
-      </div>`;
-    g.appendChild(card);
+function renderBoard(){
+  const g = $('colG'), d = $('colD'), pool = $('pool');
+  g.innerHTML = d.innerHTML = pool.innerHTML = '';
+  participants.forEach(p=>{
+    const chip = makeChip(p);
+    (placement[p]==='gauche' ? g : placement[p]==='droite' ? d : pool).appendChild(chip);
   });
-  $('verdictBtn').disabled = players.some(p=>!votes[p]);
 }
-function castVote(i, side){ votes[players[i]] = side; renderVoteGrid() }
+function renderVerdictBtn(){
+  const word = $('wordInput').value.trim();
+  const ok = phase==='placing' && word && participants.length>=2 && participants.every(p=>placement[p]!==null);
+  $('verdictBtn').disabled = !ok;
+}
 
-// ─── Verdict IA (Gemini) ──────────────────────────────────────────────────────
-async function askGemini(theWord){
-  const key = getApiKey();
-  if(!key) throw new Error('Pas de clé API');
-  const prompt = `Tu es l'intelligence artificielle du jeu "C'est de gauche ou de droite ?" (jeu humoristique français, à ne pas prendre au premier degré).
+// ─── Verdict ──────────────────────────────────────────────────────────────────
+const AI_PROMPT = theWord => `Tu es l'intelligence artificielle du jeu "C'est de gauche ou de droite ?" (jeu humoristique français, à ne pas prendre au premier degré).
 On te donne un mot ou une expression : « ${theWord} »
 Tu DOIS trancher : c'est de gauche OU de droite. Interdiction de répondre "les deux", "ça dépend" ou de rester neutre.
 Donne aussi une explication de 2 à 3 phrases : drôle, second degré, pleine de clichés politiques assumés et d'absurde à la française. L'explication doit justifier ton verdict avec une mauvaise foi assumée mais un fond d'observation sociologique.`;
+
+// Extrait {verdict, explication} d'une réponse texte (JSON ou texte libre)
+function parseVerdict(text){
+  if(!text) return null;
+  try{
+    const a = text.indexOf('{'), b = text.lastIndexOf('}');
+    if(a>=0 && b>a){
+      const p = JSON.parse(text.slice(a,b+1));
+      const v = String(p.verdict||'').toLowerCase();
+      if(v==='gauche'||v==='droite') return { verdict:v, explication:String(p.explication||'').trim() };
+    }
+  }catch(e){}
+  const t = text.toLowerCase(), g = t.includes('gauche'), d = t.includes('droite');
+  if(g !== d) return { verdict: g?'gauche':'droite', explication: text.trim().slice(0,400) };
+  return null;
+}
+
+async function askGemini(theWord){
+  const key = getApiKey();
+  if(!key) throw new Error('Pas de clé Gemini');
+  const prompt = AI_PROMPT(theWord);
   const body = {
     contents: [{ parts: [{ text: prompt }] }],
     generationConfig: {
@@ -442,144 +475,174 @@ Donne aussi une explication de 2 à 3 phrases : drôle, second degré, pleine de
   throw new Error('Tous les modèles Gemini ont échoué');
 }
 
+// IA publique sans clé (Pollinations, comme le site original utilisait GPT-3)
+async function askPollinations(theWord){
+  const sys = `Tu réponds UNIQUEMENT en JSON strict : {"verdict":"gauche"} ou {"verdict":"droite"}, avec un champ "explication" (2-3 phrases). Aucun texte hors du JSON.`;
+  const ctrl = new AbortController();
+  const timer = setTimeout(()=>ctrl.abort(), 30000);
+  try{
+    // 1) Endpoint OpenAI-compatible (POST)
+    const resp = await fetch('https://text.pollinations.ai/openai', {
+      method:'POST', headers:{'Content-Type':'application/json'}, signal:ctrl.signal,
+      body: JSON.stringify({
+        model:'openai-fast', temperature:1.0,
+        messages:[{role:'system',content:sys},{role:'user',content:AI_PROMPT(theWord)}],
+        referrer:'gauchedroitegame'
+      })
+    });
+    if(resp.ok){
+      const j = await resp.json();
+      const r = parseVerdict(j.choices?.[0]?.message?.content||'');
+      if(r) return {...r, model:'pollinations'};
+    }
+  }catch(e){}finally{ clearTimeout(timer) }
+  // 2) Endpoint GET simple en secours
+  try{
+    const url = 'https://text.pollinations.ai/' + encodeURIComponent(AI_PROMPT(theWord)+'\n'+sys) + '?model=openai-fast&json=true&referrer=gauchedroitegame';
+    const resp = await fetch(url);
+    if(resp.ok){
+      const r = parseVerdict(await resp.text());
+      if(r) return {...r, model:'pollinations'};
+    }
+  }catch(e){}
+  throw new Error('IA publique injoignable');
+}
+
 function majorityVerdict(){
   let g=0,d=0;
-  players.forEach(p=>{ votes[p]==='gauche' ? g++ : d++ });
+  participants.forEach(p=>{ placement[p]==='gauche' ? g++ : d++ });
   if(g===d){
     const v = Math.random()<.5?'gauche':'droite';
-    return { verdict:v, explication:'Égalité parfaite dans les votes ('+g+'–'+d+') : le destin a tranché à pile ou face. C\'est peut-être ça, le centrisme.', mode:'majorité (égalité → hasard)' };
+    return { verdict:v, explication:'Égalité parfaite ('+g+'–'+d+') : le destin a tranché à pile ou face. C\'est peut-être ça, le centrisme.', modeLabel:'égalité → hasard' };
   }
   const v = g>d?'gauche':'droite';
-  return { verdict:v, explication:'Verdict rendu par la majorité des joueurs ('+Math.max(g,d)+' voix contre '+Math.min(g,d)+'). La démocratie a parlé, comme d\'habitude elle a raison. Ou pas.', mode:'vote majoritaire' };
+  return { verdict:v, explication:'Verdict rendu par la majorité ('+Math.max(g,d)+' voix contre '+Math.min(g,d)+'). La démocratie a parlé, comme d\'habitude elle a raison. Ou pas.', modeLabel:'vote majoritaire' };
+}
+
+const AI_SEARCH_MSGS = ["🤖 L'IA cherche…","🤖 L'IA consulte son idéologie…","🤖 L'IA relit les programmes des partis…","🤖 L'IA hésite… non, elle tranche…","🤖 L'IA sonde les zincs de bistrot…"];
+let aiStatusInt = null;
+function showAiStatus(on){
+  clearInterval(aiStatusInt);
+  const el = $('aiStatus');
+  if(on){
+    let i = 0;
+    el.textContent = AI_SEARCH_MSGS[0];
+    el.style.display = '';
+    aiStatusInt = setInterval(()=>{ i=(i+1)%AI_SEARCH_MSGS.length; el.textContent = AI_SEARCH_MSGS[i] }, 2000);
+  }else{
+    el.style.display = 'none';
+  }
 }
 
 async function revealVerdict(){
-  screen('loadingScreen');
-  let i = 0;
-  $('loadMsg').textContent = LOAD_MSGS[0];
-  clearInterval(loadInt);
-  loadInt = setInterval(()=>{ i=(i+1)%LOAD_MSGS.length; $('loadMsg').textContent = LOAD_MSGS[i] },1600);
+  const word = $('wordInput').value.trim();
+  if(!word) return;
+  const btn = $('verdictBtn');
+  btn.disabled = true; btn.textContent = '⚖️ …';
+  showAiStatus(true);
 
   let result, mode;
-  try{
-    if(!getApiKey()) throw new Error('no key');
-    result = await askGemini(word);
-    mode = 'ia';
-  }catch(e){
-    const m = majorityVerdict();
-    result = m; mode = 'maj';
-    result.modeLabel = m.mode;
+  try{ result = await askGemini(word); mode = 'gemini' }
+  catch(e1){
+    try{ result = await askPollinations(word); mode = 'ia' }
+    catch(e2){ result = majorityVerdict(); mode = 'maj' }
   }
-  clearInterval(loadInt);
+  showAiStatus(false);
+  btn.textContent = '⚖️ VERDICT';
+  phase = 'done';
 
-  // Points : +1 si le vote correspond au verdict
+  // Points : +1 si bien placé
   const deltas = {};
-  players.forEach(p=>{ deltas[p] = (votes[p]===result.verdict) ? 1 : 0 });
+  participants.forEach(p=>{ deltas[p] = (placement[p]===result.verdict) ? 1 : 0 });
   scores = getScores(); rounds = getRounds();
-  players.forEach(p=>{ scores[p] = (scores[p]||0) + deltas[p] });
+  participants.forEach(p=>{ scores[p] = (scores[p]||0) + deltas[p] });
   rounds.push({
     n: rounds.length+1,
     date: new Date().toLocaleString('fr-FR'),
     word, verdict: result.verdict, explication: result.explication,
-    mode: mode==='ia' ? 'IA' : 'Majorité',
-    votes: {...votes}, deltas, players: [...players]
+    mode: mode==='gemini' ? 'IA Gemini' : mode==='ia' ? 'IA' : (result.modeLabel||'Majorité'),
+    votes: {...placement}, deltas, players: [...participants]
   });
   saveScores(); saveRounds();
-  showResult(result, mode, deltas);
-}
 
-// ─── Affichage résultat ───────────────────────────────────────────────────────
-function showResult(result, mode, deltas){
-  $('resultWordLabel').textContent = '« '+word+' »';
+  // Affichage résultat inline
   const b = $('verdictBanner');
   b.className = 'verdict-banner '+result.verdict;
-  b.textContent = result.verdict==='gauche' ? "C'EST DE GAUCHE ✊" : "C'EST DE DROITE 💼";
-  const badge = $('modeBadge');
-  if(mode==='ia'){ badge.className='mode-badge mode-ia'; badge.textContent='🤖 Verdict IA' }
-  else{ badge.className='mode-badge mode-maj'; badge.textContent='🗳️ '+(result.modeLabel||'Vote majoritaire') }
+  b.textContent = '« '+word+' » : '+(result.verdict==='gauche' ? "DE GAUCHE ✊" : "DE DROITE 💼");
+  $('modeBadge').textContent = mode==='gemini' ? '🤖 verdict ia (gemini)' : mode==='ia' ? '🤖 verdict ia' : '🗳️ '+(result.modeLabel||'vote majoritaire')+' — ia injoignable';
   $('explainBox').textContent = '💬 '+result.explication;
-  $('resChips').innerHTML = players.map(p=>{
+  $('resChips').innerHTML = participants.map(p=>{
     const ok = deltas[p]===1;
     return `<span class="res-chip ${ok?'res-win':'res-lose'}">${ok?'✅':'❌'} ${esc(p)} ${ok?'+1':''}</span>`;
   }).join('');
-  $('resultLeader').innerHTML = leaderboardHtml();
-  $('resultTable').innerHTML = roundsTableHtml();
-  screen('resultScreen');
+  $('result').classList.add('show');
+  renderLeaderboard(); renderHistory();
+  $('result').scrollIntoView({behavior:'smooth', block:'nearest'});
 }
 
-// ─── Leaderboard & tableau ────────────────────────────────────────────────────
-function leaderboardHtml(){
+function nextRound(){
+  phase = 'placing';
+  participants.forEach(p=>placement[p]=null);
+  $('wordInput').value = '';
+  $('result').classList.remove('show');
+  renderBoard(); renderVerdictBtn();
+  $('wordInput').focus();
+}
+
+// ─── Sidebar ──────────────────────────────────────────────────────────────────
+function renderLeaderboard(){
   scores = getScores();
-  const rows = Object.entries(scores).sort((a,b)=>b[1]-a[1]).slice(0,3);
-  if(!rows.length) return '<p class="mini">Aucun score pour le moment.</p>';
+  const rows = Object.entries(scores).sort((a,b)=>b[1]-a[1]);
   const medals = ['🥇','🥈','🥉'];
-  return `<div class="leader">${rows.map((r,i)=>`<div class="leader-card"><div class="rank">${medals[i]||'#'+(i+1)}</div><strong>${esc(r[0])}</strong><div class="score">${r[1]}</div></div>`).join('')}</div>`;
+  $('leaderboard').innerHTML = rows.length
+    ? rows.map((r,i)=>`<div class="lb-row"><span><span class="medal">${medals[i]||(i+1)+'.'}</span>${esc(r[0])}</span><span class="pts">${r[1]}</span></div>`).join('')
+    : '<p class="mini">Aucun score pour le moment.</p>';
 }
-function roundsTableHtml(){
-  rounds = getRounds(); scores = getScores();
-  if(!rounds.length) return '<p class="mini">Aucune manche jouée.</p>';
-  const allPlayers = [...new Set([...Object.keys(scores), ...rounds.flatMap(r=>r.players||[])])];
-  return `<div class="table-wrap"><table><thead><tr><th>Joueur</th>${rounds.map(r=>`<th>M${r.n}<br><span class="mini">${esc(r.word)}</span><br><span class="${r.verdict==='gauche'?'g-tag':'d-tag'}">${r.verdict==='gauche'?'✊ G':'💼 D'}</span></th>`).join('')}<th>Total</th></tr></thead><tbody>${
-    allPlayers.map(p=>`<tr><td>${esc(p)}</td>${rounds.map(r=>{
-      if(!(r.players||[]).includes(p)) return '<td class="zero">·</td>';
-      const v = (r.deltas||{})[p]??0;
-      return `<td class="${v>0?'pos':'zero'}">${v>0?'+1':'0'}</td>`;
-    }).join('')}<td><strong>${scores[p]||0}</strong></td></tr>`).join('')
-  }</tbody></table></div>`;
+function renderHistory(){
+  rounds = getRounds();
+  $('histList').innerHTML = rounds.length
+    ? [...rounds].reverse().map(r=>{
+        const voteStr = Object.entries(r.votes||{}).map(([p,v])=>`${esc(p)} ${v==='gauche'?'✊':'💼'}`).join(' · ');
+        return `<div class="hist-item">
+          <div class="hist-top">
+            <span class="hist-word">M${r.n} · ${esc(r.word)}</span>
+            <span class="hist-verdict ${r.verdict}">${r.verdict==='gauche'?'✊ GAUCHE':'💼 DROITE'}</span>
+          </div>
+          <div class="hist-exp">💬 ${esc(r.explication||'')}</div>
+          <div class="hist-votes">${voteStr}</div>
+        </div>`;
+      }).join('')
+    : '<p class="mini">Aucune manche jouée pour le moment.</p>';
 }
 
-// ─── Overlays ─────────────────────────────────────────────────────────────────
-function showScoresOverlay(){
-  $('scoresOverlayContent').innerHTML = `<h3 class="sec">🏆 Leaderboard</h3>${leaderboardHtml()}<h3 class="sec">📊 Points par manche</h3>${roundsTableHtml()}`;
-  $('scoresOverlay').classList.add('show');
-}
-function showHistoryOverlay(){
-  rounds = getRounds();
-  const c = $('historyContent');
-  if(!rounds.length){ c.innerHTML = '<p class="mini">Aucune manche jouée pour le moment.</p>' }
-  else{
-    c.innerHTML = [...rounds].reverse().map(r=>{
-      const voteStr = Object.entries(r.votes||{}).map(([p,v])=>`${esc(p)} ${v==='gauche'?'✊':'💼'}`).join(' · ');
-      return `<div class="hist-item">
-        <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
-          <span class="hist-word">M${r.n} · ${esc(r.word)}</span>
-          <span class="hist-verdict ${r.verdict}">${r.verdict==='gauche'?'✊ GAUCHE':'💼 DROITE'} <span class="mini">(${esc(r.mode||'')})</span></span>
-        </div>
-        <div style="font-style:italic;margin:4px 0">💬 ${esc(r.explication||'')}</div>
-        <div class="mini">${voteStr}</div>
-        <div class="mini" style="opacity:.7">${esc(r.date||'')}</div>
-      </div>`;
-    }).join('');
-  }
-  $('historyOverlay').classList.add('show');
-}
-function showSettingsOverlay(){
-  $('apiKeyInput').value = getApiKey();
-  $('apiTestResult').textContent = '';
-  $('settingsOverlay').classList.add('show');
-}
+// ─── Réglages ─────────────────────────────────────────────────────────────────
+function showSettings(){ $('apiKeyInput').value = localStorage.getItem(APIKEY_KEY)||''; $('apiTestResult').textContent=''; $('settingsOverlay').classList.add('show') }
+function hideSettings(){ $('settingsOverlay').classList.remove('show') }
 function saveApiKey(){
   localStorage.setItem(APIKEY_KEY, $('apiKeyInput').value.trim());
   $('apiTestResult').textContent = '💾 Clé enregistrée.';
-  renderApiStatus();
 }
 async function testApiKey(){
   localStorage.setItem(APIKEY_KEY, $('apiKeyInput').value.trim());
-  renderApiStatus();
   const r = $('apiTestResult');
   r.textContent = '🧪 Test en cours…';
   try{
     const res = await askGemini('la baguette');
-    r.textContent = `✅ Ça marche (${res.model}) — « la baguette » est de ${res.verdict} : ${res.explication}`;
+    r.textContent = `✅ Gemini OK (${res.model}) — « la baguette » est de ${res.verdict} : ${res.explication}`;
+    return;
+  }catch(e){}
+  r.textContent = '🧪 Gemini KO (clé absente/invalide)… test de l\'IA publique…';
+  try{
+    const res = await askPollinations('la baguette');
+    r.textContent = `✅ IA publique OK (sans clé) — « la baguette » est de ${res.verdict} : ${res.explication}`;
   }catch(e){
-    r.textContent = '❌ Échec : clé invalide, quota dépassé ou pas de réseau.';
+    r.textContent = '❌ Aucune IA joignable : le jeu utilisera le vote majoritaire.';
   }
 }
-function hideOverlay(id){ $(id).classList.remove('show') }
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
-if(!getProfiles()) saveProfiles(DEFAULT_PROFILES);
-renderProfileChips(); renderSelectedChips(); renderApiStatus();
+renderProfiles(); renderBoard(); renderVerdictBtn(); renderLeaderboard(); renderHistory();
+loadPlayersTxt();
 </script>
 </body>
 </html>
