@@ -16,7 +16,7 @@ Jeu de soirée sur tablette/mobile : on propose un mot, chaque joueur vote **Gau
 ## 🤖 Verdict IA ou vote majoritaire
 
 - **Par défaut** : IA publique gratuite sans clé ([Pollinations](https://pollinations.ai)), dans l'esprit du site original qui utilisait GPT-3.
-- **Avec une clé API Gemini** (gratuite sur [aistudio.google.com](https://aistudio.google.com)) : verdicts plus rapides et fiables. Deux façons de la fournir : la coller dans ⚙️ (stockée dans le navigateur), ou créer un fichier `apikey.txt` (une ligne, la clé) à côté de `index.html` — ce fichier est dans `.gitignore` et ne doit **jamais** être commité.
+- **Avec une clé API Gemini** (gratuite sur [aistudio.google.com](https://aistudio.google.com)) : verdicts plus rapides et fiables. Deux façons de la fournir : la coller dans ⚙️ (stockée dans le navigateur), ou un fichier `apikey.txt` (une ligne, la clé) à côté de `index.html`.
 - **Sans réseau** : bascule automatique sur le vote majoritaire des joueurs (égalité → pile ou face « centriste »).
 
 ## 👥 Joueurs
